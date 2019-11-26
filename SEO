@@ -52,7 +52,7 @@ df['H1'] = h1s
 driver.close()
 
 
-print(df_nova.head())
+print(df.head())
 
 ## Salvando em CSV
 
