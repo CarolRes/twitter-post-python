@@ -1,0 +1,66 @@
+
+from selenium import webdriver
+import pandas as pd
+from selenium.common.exceptions import NoSuchElementException
+
+def check_exists_by_xpath(xpath):
+    try:
+        driver.find_element_by_xpath(xpath)
+    except NoSuchElementException:
+        return False
+    return True
+
+def tagNone(VarTag,ListaTag):
+    if VarTag != None:
+        ListaTag.append(VarTag)
+    else:
+        ListaTag.append('nao tem texto na tag')
+
+## Acessando o Chrome
+
+driver = webdriver.Chrome()
+
+## Acessando o Arquivo com as urls
+
+df = pd.read_csv('url_.csv')
+titulos = []
+dominios = []
+h1s = []
+
+
+## Buscando Title, Dominio e H1
+
+for row in df["URLS"]:
+    print(row)
+    driver.get(row)
+    title = driver.find_element_by_xpath('//title').get_attribute('textContent')
+    tagNone(title, titulos)
+    dominio = driver.find_element_by_xpath("//meta[@property='og:url']").get_attribute('content')
+    tagNone(dominio, dominios)
+    if check_exists_by_xpath("//h1") == True:
+        h1 = driver.find_element_by_xpath("//div/h1").text
+        tagNone(h1, h1s)
+    else:
+        h1s.append('nao tem tag')
+
+## Preenchendo as colunas DF
+
+df["TITLES"] = titulos
+df["DOMINIO"] = dominios
+df['H1'] = h1s
+
+driver.close()
+
+
+print(df_nova.head())
+
+## Salvando em CSV
+
+df = pd.to_csv('final.csv', index=True, header=True, sep=',')
+
+
+
+
+
+
+
